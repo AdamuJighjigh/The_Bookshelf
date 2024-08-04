@@ -36,6 +36,23 @@ def create():
         return redirect(url_for('index'))
     return render_template('create.html')
 
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    if request.method == 'POST':
+        title = request.form['title']
+        author = request.form['author']
+        year = request.form['year']
+        cursor.execute('UPDATE books SET title=%s, author=%s, year=%s WHERE id=%s', (title, author, year, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
+    else:
+        cursor.execute('SELECT * FROM books WHERE id=%s', (id,))
+        book = cursor.fetchone()
+        conn.close()
+        return render_template('update.html', book=book)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete(id):
