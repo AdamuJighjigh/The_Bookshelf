@@ -9,19 +9,11 @@ db_config = {
     'host': '127.0.0.1',
     'database': 'library_db'
 }
-
 def get_db_connection():
     conn = mysql.connector.connect(**db_config)
     return conn
 
-@app.route('/')
-def index():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM books')
-    books = cursor.fetchall()
-    conn.close()
-    return render_template('index.html', books=books)
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
